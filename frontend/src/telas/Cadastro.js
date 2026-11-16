@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import {View, Text, TextInput, TouchableOpacity, StyleSheet, Alert,} from 'react-native';
-import { useApp } from '../contexts/AppContext';
+import { useApp } from '../contexto/AppContexto';
 import { globalStyles, CORES } from '../styles/globalStyles';
 
-export default function CadastroScreeen({navigation})
+export default function CadastroScreen({navigation})
 {
     const [nome, setNome] = useState('');
     const [email, setEmail] = useState('');
@@ -21,9 +21,9 @@ export default function CadastroScreeen({navigation})
     }
 
     return(
-        <View style= {globalStyles.container}>
+        <View style= {globalStyles.containerCentralizado}>
             <Text style = {globalStyles.titulo}>Criar Conta</Text>
-            <Text style = {globalStyles.subTitulo}>Preencha seus dados de estudante</Text>
+            <Text style = {globalStyles.subtitulo}>Preencha seus dados de estudante</Text>
             
             <TextInput style = {globalStyles.input}
             placeholder='Seu nome completo'
@@ -51,7 +51,7 @@ export default function CadastroScreeen({navigation})
             </TouchableOpacity>
 
             <TouchableOpacity onPress={() => navigation.goBack()}>
-                <Text style={styles.link}>Já tem conta? Voltar para o Login</Text>
+                <Text style={globalStyles.link}>Já tem conta? Voltar para o Login</Text>
             </TouchableOpacity>
 
         </View>

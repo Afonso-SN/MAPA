@@ -1,12 +1,12 @@
-import React from "react";
+import React, {useState} from "react";
 import {View, Text, TextInput, TouchableOpacity, StyleSheet, Alert,} from 'react-native'
-import {useApp} from '.../contexto/AppContexto';
+import {useApp} from '../contexto/AppContexto';
 import { globalStyles, CORES } from '../styles/globalStyles';
 
 export default function LoginScreen({navigation})
 {
     const[email, setEmail] = useState('');
-    const[senha, setSnha] = useState('');
+    const[senha, setSenha] = useState('');
     const {entrar} = useApp();
 
     async function Login() {
@@ -15,13 +15,13 @@ export default function LoginScreen({navigation})
         }
         catch(erro)
         {
-            Alert.alert('Atenção ', erro.mensage);
+            Alert.alert('Atenção ', erro.message);
         }
     }
 
     return(
-        <View style = {globalStyles.container}>
-            <Text style = {globalStyles.titulo}>MAPA</Text>
+        <View style = {globalStyles.containerCentralizado}>
+            <Text style = {globalStyles.titulo}>NOTS</Text>
             <Text style = {globalStyles.subtitulo}>Organizador de tarefas e Estutos</Text>
 
             <TextInput style = {globalStyles.input}
@@ -29,14 +29,14 @@ export default function LoginScreen({navigation})
                 keyboardType="email-adress"
                 autoCapitalize="none"
                 value={email}
-                onChange={setEmail}
+                onChangeText={setEmail}
             />
 
-            <TextInput styles = {globalStyles.input}
+            <TextInput style = {globalStyles.input}
                 placeholder="Sua senha"
                 secureTextEntry
                 value={senha}
-                onChange={setSenha}
+                onChangeText={setSenha}
             />
 
             <TouchableOpacity style = {globalStyles.botao} onPress={Login}>
@@ -44,7 +44,7 @@ export default function LoginScreen({navigation})
             </TouchableOpacity>
             
             <TouchableOpacity onPress={() => navigation.navigate('Cadastro')}>
-                <Text style = {globalStyles.textoBotao}>Não tem conta? Cadastre-se</Text>
+                <Text style = {globalStyles.link}>Não tem conta? Cadastre-se</Text>
             </TouchableOpacity>
         </View>
     );

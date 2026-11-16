@@ -45,7 +45,8 @@ export const globalStyles = StyleSheet.create({
   },
   input: {
     backgroundColor: CORES.branco,
-    padding: 14,
+    height: 52,                // Trava todos os inputs na mesma altura exata
+    paddingHorizontal: 14,     // Garante o espaçamento nas laterais do placeholder
     borderRadius: 8,
     marginBottom: 14,
     borderWidth: 1,
@@ -73,7 +74,7 @@ export const globalStyles = StyleSheet.create({
     fontSize: 16,
   },
   link: {
-    color: CORES.primaria,
+    color: CORES.textoEscuro,
     textAlign: 'center',
     marginTop: 20,
     fontWeight: '600',

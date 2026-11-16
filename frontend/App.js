@@ -2,10 +2,10 @@ import React from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { AppProvider, useApp } from './src/contexts/AppContext';
+import { AppProvider, useApp } from './src/contexto/AppContexto';
 
-import LoginScreen from './src/screens/Login';
-import CadastroScreen from './src/screens/Cadastro';
+import LoginScreen from './src/telas/Login';
+import CadastroScreen from './src/telas/Cadastro';
 
 const Stack = createNativeStackNavigator();
 
@@ -37,19 +37,19 @@ function Rotas(){
     <NavigationContainer>
       <Stack.Navigator>
         {usuario ? (
-          <usuario.Screen
+          <Stack.Screen
             name="Inicio"
             component={TelaProvisoria}
             options={{tittle: 'Minhas Tarefas'}}
         /> 
         ) :(
           <>
-          <Stack.Screeen
+          <Stack.Screen
             name="Login"
             component={LoginScreen}
             options={{ headerShown: false}}
           />
-          <Stack.Screeen
+          <Stack.Screen
             name="Cadastro"
             component={CadastroScreen}
             options={{ tittle: 'Cadastro'}}

@@ -1,9 +1,9 @@
 import React, { createContext, useState, useEffect, useContext} from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const AppContext = createContext();
+const AppContexto = createContext();
 
-export default AppProvider([children])
+export function AppProvider({children})
 {
     const [usuario, setUsuario] = useState(null);
     const [tarefas, setTarefas] = useState([]);
@@ -31,10 +31,10 @@ export default AppProvider([children])
     async function cadastrar(nome, email, senha) {
         if (!nome.trim() || !email.trim() || !senha.trim())
             {
-                throw new error('Preencha todos os campos.');
+                throw new Error('Preencha todos os campos.');
             }
-        const listaTesto = await AsyncStorage.getItem('@mapa:usuarios_db');
-        const ususarios = listaTexto ? JSON.parse(listaTexto) : [];
+        const listaTexto = await AsyncStorage.getItem('@mapa:usuarios_db');
+        const usuarios = listaTexto ? JSON.parse(listaTexto) : [];
 
         const jaExiste = usuarios.some(
             (usuario) => usuario.email.toLowerCase() === email.trim().toLowerCase()
@@ -63,12 +63,12 @@ export default AppProvider([children])
             throw new Error("Informe o e-mail e a senha.")
         }
 
-        const ListaTexto = await AsyncStorage.getItem('@mapa:usuarios_db');
+        const listaTexto = await AsyncStorage.getItem('@mapa:usuarios_db');
         const usuarios = listaTexto ? JSON.parse(listaTexto) : [];
 
         const encontrado = usuarios.find(
             (usuario) => 
-                usuario.email.toLowerCase() === email.trim().toLowerCase() & usuario.senha === senha
+                usuario.email.toLowerCase() === email.trim().toLowerCase() && usuario.senha === senha
         );
 
         if (!encontrado)
@@ -76,7 +76,7 @@ export default AppProvider([children])
                 throw new Error("E-mail ou senha incorretos.");
                 
             }
-        await SalvarSessao(encosntrado, 'token-jwt-temporario');
+        await SalvarSessao(encontrado, 'token-jwt-temporario');
     }
 
     async function sair() {
