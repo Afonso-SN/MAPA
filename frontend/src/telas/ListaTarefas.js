@@ -1,5 +1,5 @@
 import React, {useState} from "react";
-import {View, Text, TextInput, TouchableOpacity, StyleSheet, Alert,} from 'react-native'
+import {View, Text, FlatList, TouchableOpacity, StyleSheet, Alert,} from 'react-native'
 import {useApp} from '../contexto/AppContexto';
 import { globalStyles, CORES } from '../styles/globalStyles';
 import { tarefaStyles } from "../styles/tarefasStyles";
@@ -45,7 +45,40 @@ return (
             <Text style = {globalStyles.textoBotao}>+ Nova Tarefa</Text>
         </TouchableOpacity>
 
+        <FlatList
+            data={minhasTarefas}
+            keyExtractor={(item) => (item.id)}
+            ListEmptyComponent={<Text style={tarefaStyles.vazio}>Nenhuma tarefa ainda. Toque no botão acima para criar a primeira!</Text>}
+
+            renderItem={({ item })=> (
+                <TouchableOpacity style={tarefaStyles.linhaCard}
+                onPress={() => navigation.navigate('FormTarefa', {tarefa: item})}>
+                    <View style={tarefaStyles.linhaCard}>
+                        <Text style={tarefaStyles.disciplina}>{item.disciplina}</Text>
+                        <Text style={[tarefaStyles.status, {color: item.concluida ? CORES.sucesso : CORES.primeira},]}>
+                            {item.concluida ? '✓ Concluída' :'• Pendente'}
+                        </Text>
+                    </View>
+
+                    <Text style={tarefaStyles.tituloTarefa}>{item.titulo}</Text>
+                    {item.anotacao ? (
+                        <Text style={tarefaStyles.notaResumo} numberOfLines={2}>
+                            Nota: {item.anotacao}
+                        </Text>
+                    ): null}
+                    <View style={tarefaStyles.acoes}>
+                        <Text style={tarefaStyles.dicaEditar}>
+                            Toque para abrir/editar
+                        </Text>
+                        <TouchableOpacity onPress={() => confirmarExclusao(item.id, item.titulo)}>
+                            <Text style={tarefaStyles.textoExcluir}>Excluir</Text>
+                        </TouchableOpacity>
+                    </View>
+                </TouchableOpacity>
+            )}
+        />
     </View>
-)
+    );
+
 
 

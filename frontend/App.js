@@ -1,64 +1,62 @@
 import React from 'react';
-import { View, Text, TouchableOpacity } from 'react-native';
-import { NavigationContainer } from '@react-navigation/native';
+import { NavigationContainer, StackActions } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { AppProvider, useApp } from './src/contexto/AppContexto';
 
-import LoginScreen from './src/telas/Login';
-import CadastroScreen from './src/telas/Cadastro';
+import Login from './src/telas/Login';
+import Cadastro from './src/telas/Cadastro';
+import ListaTarefas from './src/telas/ListaTarefas';
+import FormTarefa from './src/telas/FormTarefa';
+import Perfil from './src/telas/Perfil';
 
 const Stack = createNativeStackNavigator();
 
-//tela temporaria
-
-function TelaProvisoria()
+function Rotas()
 {
-  const {usuario, sair} = useApp();
-
-return(
-<View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-      <Text style={{ fontSize: 20, marginBottom: 16 }}>
-        Bem-vindo, {usuario.nome}!
-      </Text>
-        <TouchableOpacity
-          onPress={sair}
-          style={{ backgroundColor: '#DC2626', padding: 12, borderRadius: 8 }}
-          >
-          <Text style={{ color: '#FFF', fontWeight: 'bold' }}>Sair</Text>
-      </TouchableOpacity>
-    </View>
-  );
-}
-
-function Rotas(){
   const {usuario} = useApp();
-
+  
   return(
     <NavigationContainer>
-      <Stack.Navigator>
-        {usuario ? (
-          <Stack.Screen
-            name="Inicio"
-            component={TelaProvisoria}
-            options={{tittle: 'Minhas Tarefas'}}
-        /> 
-        ) :(
-          <>
-          <Stack.Screen
-            name="Login"
-            component={LoginScreen}
-            options={{ headerShown: false}}
-          />
-          <Stack.Screen
-            name="Cadastro"
-            component={CadastroScreen}
-            options={{ tittle: 'Cadastro'}}
-          />
-        </>
-        )}
-      </Stack.Navigator>
+        <Stack.Navigator>
+          {usuario ?(
+            <>
+              <Stack.Screen
+                name="Inicio"
+                component={ListaTarefas}
+                options={{tittle: 'Minhas Tarefas'}}
+              />
+
+              <Stack.Screen
+                name="FormTarefa"
+                component={FormTarefa}
+                options={{tittle: 'Tarefa e nota de estudo'}}
+              />
+
+              <Stack.Screen
+                name="Perfil"
+                component={Perfil}
+                options={{tittle: 'Perfil'}}
+              />
+            </>
+          ):(
+            <>
+            <Stack.Screen
+              name="Login"
+              component={Login}
+              options={{headerShown: false}}
+            />
+
+            <Stack.Screen
+              name="Cadastrp"
+              component={Cadastro}
+              options={{title: 'Cadastro'}}
+            />
+            </>
+          )}
+        </Stack.Navigator>
     </NavigationContainer>
   );
+  
 }
 
 export default function App(){
