@@ -1,4 +1,4 @@
-package main.java.com.faculdade.mapa.security;
+﻿package com.faculdade.mapa.security;
 
 import com.faculdade.mapa.model.Usuario;
 import com.faculdade.mapa.repository.UsuarioRepository;

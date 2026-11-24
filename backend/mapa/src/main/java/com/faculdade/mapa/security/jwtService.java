@@ -1,4 +1,4 @@
-package main.java.com.faculdade.mapa.security;
+package com.faculdade.mapa.security;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;

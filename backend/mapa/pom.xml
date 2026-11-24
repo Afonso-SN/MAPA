@@ -77,7 +77,6 @@
 			<groupId>org.hibernate.orm</groupId>
 			<artifactId>hibernate-community-dialects</artifactId>
 		</dependency>
-	</dependencies>
 	
 		<!-- Biblioteca para gerar e validar o Token JWT -->
 
@@ -86,7 +85,7 @@
 			<artifactId>java-jwt</artifactId>
 			<version>4.4.0</version>
 		</dependency>
-
+	</dependencies>
 	<build>
 		<plugins>
 			<plugin>

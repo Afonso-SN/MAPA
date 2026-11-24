@@ -1,4 +1,4 @@
-package main.java.com.faculdade.mapa.dto;
+package com.faculdade.mapa.dto;
 
 public record TarefaRequest(
     String titulo,

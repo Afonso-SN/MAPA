@@ -2,7 +2,7 @@ import React from 'react';
 import { View, Text, FlatList, TouchableOpacity, Alert } from 'react-native';
 import { useApp } from '../contexto/AppContexto';
 import { globalStyles } from '../styles/globalStyles';
-import { tarefaStyles } from '../styles/tarefaStyles';
+import { tarefaStyles } from '../styles/tarefasStyles';
 import { Botao, CardTarefa } from '../componentes/componentes';
 
 export default function ListaTarefas({ navigation }) {

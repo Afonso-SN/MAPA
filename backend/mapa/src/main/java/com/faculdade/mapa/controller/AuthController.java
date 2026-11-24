@@ -1,4 +1,4 @@
-package main.java.com.faculdade.mapa.controller;
+package com.faculdade.mapa.controller;
 
 import com.faculdade.mapa.dto.AuthDTO.*;
 import com.faculdade.mapa.model.Usuario;

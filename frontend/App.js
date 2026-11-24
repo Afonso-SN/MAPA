@@ -47,7 +47,7 @@ function Rotas()
             />
 
             <Stack.Screen
-              name="Cadastrp"
+              name="Cadastro"
               component={Cadastro}
               options={{title: 'Cadastro'}}
             />

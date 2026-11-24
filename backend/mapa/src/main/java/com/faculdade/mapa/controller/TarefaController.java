@@ -1,4 +1,4 @@
-package main.java.com.faculdade.mapa.controller;
+package com.faculdade.mapa.controller;
 
 import com.faculdade.mapa.dto.TarefaRequest;
 import com.faculdade.mapa.model.Tarefa;
