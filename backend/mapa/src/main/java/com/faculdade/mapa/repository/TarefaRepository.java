@@ -5,6 +5,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 public interface TarefaRepository extends JpaRepository<Tarefa, Long> {
-    // Lista apenas as tarefas pertencentes ao usuário logado
-    List<Tarefa> findByUsuarioId(Long usuarioId);
+    List<Tarefa> findByUsuarioIdOrderByIdDesc(Long usuarioId);
 }

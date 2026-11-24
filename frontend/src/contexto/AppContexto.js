@@ -1,142 +1,100 @@
-import React, { createContext, useState, useEffect, useContext} from 'react';
+import React, { createContext, useState, useEffect, useContext } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import api from '../services/api';
 
 const AppContexto = createContext();
 
-export function AppProvider({children})
-{
-    const [usuario, setUsuario] = useState(null);
-    const [tarefas, setTarefas] = useState([]);
+export function AppProvider({ children }) {
+  const [usuario, setUsuario] = useState(null);
+  const [tarefas, setTarefas] = useState([]);
 
-    useEffect(() =>{
-        async function carregarDadosLocais() 
-        {
-            const usuarioSalvo = await AsyncStorage.getItem('@mapa:usuario');
-            const tarefasSalvas = await AsyncStorage.getItem('@mapa:tarefas');
+  useEffect(() => {
+    async function carregarSessao() {
+      const usuarioSalvo = await AsyncStorage.getItem('@mapa:usuario');
+      const tokenSalvo = await AsyncStorage.getItem('@mapa:token');
 
-            if (usuarioSalvo) setUsuario(JSON.parse(usuarioSalvo));
-            if (tarefasSalvas) setTarefas(JSON.parse(tarefasSalvas));
-            
-        }
-        carregarDadosLocais();
-     }, []);
-
-    async function SalvarSessao(dadosUsuario, token) {
-
-        await AsyncStorage.setItem('@mapa:usuario', JSON.stringify(dadosUsuario));
-        await AsyncStorage.setItem('@mapa:token', token);
-        setUsuario(dadosUsuario);
+      if (usuarioSalvo && tokenSalvo) {
+        setUsuario(JSON.parse(usuarioSalvo));
+        buscarTarefas();
+      }
     }
+    carregarSessao();
+  }, []);
 
-    async function cadastrar(nome, email, senha) {
-        if (!nome.trim() || !email.trim() || !senha.trim())
-            {
-                throw new Error('Preencha todos os campos.');
-            }
-        const listaTexto = await AsyncStorage.getItem('@mapa:usuarios_db');
-        const usuarios = listaTexto ? JSON.parse(listaTexto) : [];
-
-        const jaExiste = usuarios.some(
-            (usuario) => usuario.email.toLowerCase() === email.trim().toLowerCase()
-        );
-
-        if (jaExiste) {
-            throw new Error("Este e-mail ja está cadastrado. ");
-            
-        }
-
-        const novoUsuario = {
-            id: Date.now(),
-            nome: nome.trim(),
-            email: email.trim().toLowerCase(),
-            senha,
-        }
-
-        usuarios.push(novoUsuario);
-        await AsyncStorage.setItem('@mapa:usuarios_db', JSON.stringify(usuarios));
-        await SalvarSessao(novoUsuario, 'token-jwt-temporario');
-        
+  async function buscarTarefas() {
+    try {
+      const resposta = await api.get('/tarefas');
+      setTarefas(resposta.data);
+    } catch (erro) {
+      console.log('Erro ao carregar tarefas:', erro.message);
     }
+  }
 
-    async function entrar(email, senha) {
-        if (!email.trim() || !senha.trim()) {
-            throw new Error("Informe o e-mail e a senha.")
-        }
+  async function salvarSessao(dadosUsuario, token) {
+    await AsyncStorage.setItem('@mapa:usuario', JSON.stringify(dadosUsuario));
+    await AsyncStorage.setItem('@mapa:token', token);
+    setUsuario(dadosUsuario);
+    await buscarTarefas();
+  }
 
-        const listaTexto = await AsyncStorage.getItem('@mapa:usuarios_db');
-        const usuarios = listaTexto ? JSON.parse(listaTexto) : [];
-
-        const encontrado = usuarios.find(
-            (usuario) => 
-                usuario.email.toLowerCase() === email.trim().toLowerCase() && usuario.senha === senha
-        );
-
-        if (!encontrado)
-            {
-                throw new Error("E-mail ou senha incorretos.");
-                
-            }
-        await SalvarSessao(encontrado, 'token-jwt-temporario');
+  async function cadastrar(nome, email, senha) {
+    try {
+      const resposta = await api.post('/auth/cadastro', { nome, email, senha });
+      await salvarSessao(resposta.data.usuario, resposta.data.token);
+    } catch (erro) {
+      const msg = erro.response?.data?.erro || 'Erro ao conectar com o servidor.';
+      throw new Error(msg);
     }
+  }
 
-    async function sair() {
-        await AsyncStorage.removeItem('@mapa:usuario');
-        await AsyncStorage.removeItem('@mapa:token');
-        setUsuario(null);
+  async function entrar(email, senha) {
+    try {
+      const resposta = await api.post('/auth/login', { email, senha });
+      await salvarSessao(resposta.data.usuario, resposta.data.token);
+    } catch (erro) {
+      const msg = erro.response?.data?.erro || 'Erro ao conectar com o servidor.';
+      throw new Error(msg);
     }
+  }
 
-    async function salvarTarefa({id, titulo, disciplina, anotacao, concluida}) {
-        let novaLista;
+  async function sair() {
+    await AsyncStorage.removeItem('@mapa:usuario');
+    await AsyncStorage.removeItem('@mapa:token');
+    setUsuario(null);
+    setTarefas([]);
+  }
 
-        if (id) {
-
-            novaLista = tarefas.map((item) => 
-                item.id === id ? {...item, titulo, disciplina, anotacao, concluida} : item
-            );
-        }
-
-        else {
-            const novaTarefa = {
-                id: Date.now(),
-                titulo,
-                disciplina,
-                anotacao,
-                concluida: false,
-                usuarioId: usuario.id,
-            }
-            novaLista = [novaTarefa, ...tarefas];
-        }
-
-        setTarefas(novaLista);
-        await AsyncStorage.setItem('@mapa:tarefas', JSON.stringify(novaLista));
-
+  async function salvarTarefa({ id, titulo, disciplina, anotacao, concluida }) {
+    if (id) {
+      await api.put(`/tarefas/${id}`, { titulo, disciplina, anotacao, concluida });
+    } else {
+      await api.post('/tarefas', { titulo, disciplina, anotacao, concluida: false });
     }
+    await buscarTarefas();
+  }
 
-    async function excluirTarefa(id) {
+  async function excluirTarefa(id) {
+    await api.delete(`/tarefas/${id}`);
+    await buscarTarefas();
+  }
 
-        const novaLista = tarefas.filter((item) => item.id !== id);
-        setTarefas(novaLista);
-        await AsyncStorage.setItem('@mapa:tarefas', JSON.stringify(novaLista));
-    }
-
-    const minhasTarefas = tarefas.filter((tarefas) => tarefas.usuarioId === usuario?.id);
-
-    return (
-        <AppContexto.Provider
-            value={{
-                usuario,
-                minhasTarefas,
-                cadastrar,
-                entrar,
-                sair,
-                salvarTarefa,
-                excluirTarefa,
-            }}>
-                {children}
-            </AppContexto.Provider>
-    );
+  return (
+    <AppContexto.Provider
+      value={{
+        usuario,
+        minhasTarefas: tarefas,
+        cadastrar,
+        entrar,
+        sair,
+        salvarTarefa,
+        excluirTarefa,
+      }}
+    >
+      {children}
+    </AppContexto.Provider>
+  );
 }
 
 export function useApp() {
-    return useContext(AppContexto);
+  return useContext(AppContexto);
 }
